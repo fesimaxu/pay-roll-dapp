@@ -121,84 +121,14 @@ describe("PayRoll", function () {
       );
       const staff = await payroll.isStaff(address1.address);
 
-  
-      
-
       expect(staff.claimed).to.equal(true);
-
-
-
 
         
       });
 
-      it("Should be able to claim salary by staff", async function () {
-        const { payroll,token, merkleTree,rootHash,address1,owner,payDayTime } = await loadFixture(deployPayRollFixture);
-
-        await token.mint(owner.address, ethers.utils.parseEther("200000"));
-        const staffSalary = ethers.utils.parseEther("20");
-        const amount = ethers.utils.parseEther("200");
-        const leaf = keccak256(address1.address);
-        const proof = merkleTree.getHexProof(leaf);
-
-        await payroll.connect(owner).setPaymentDeatils(rootHash,staffSalary,payDayTime);
-
-        await token
-       .connect(owner)
-       .approve(payroll.address, amount);
-  
-      await payroll.connect(owner).depositSalaryFunds(amount);
-
-       const claimToken = await payroll.connect(address1).claimSalary(
-        proof
-      );
-      const staff = await payroll.isStaff(address1.address);
-
-      expect(staff.claimed).to.equal(true);
-
-
-        
-      });
-
-    //   it("Shouldn't fail if the unlockTime has arrived and the owner calls it", async function () {
-    //     const {  } = await loadFixture(
-    //       deployPayRollFixture
-    //     );
-
-    //     // Transactions are sent using the first signer by default
-    //     await time.increaseTo(unlockTime);
-
-    //     await expect(lock.withdraw()).not.to.be.reverted;
-    //   });
+    
     });
 
-    // describe("Events", function () {
-    //   it("Should emit an event on withdrawals", async function () {
-    //     const {  } = await loadFixture(
-    //       deployPayRollFixture
-    //     );
-
-    //     await time.increaseTo(unlockTime);
-
-    //     await expect(lock.withdraw())
-    //       .to.emit(lock, "Withdrawal")
-    //       .withArgs(lockedAmount, anyValue); // We accept any value as `when` arg
-    //   });
-    // });
-
-    // describe("Transfers", function () {
-    //   it("Should transfer the funds to the owner", async function () {
-    //     const {  owner } = await loadFixture(
-    //       deployPayRollFixture
-    //     );
-
-    //     await time.increaseTo(unlockTime);
-
-    //     await expect(lock.withdraw()).to.changeEtherBalances(
-    //       [owner, lock],
-    //       [lockedAmount, -lockedAmount]
-    //     );
-    //   });
-    // });
+   
   });
 });
