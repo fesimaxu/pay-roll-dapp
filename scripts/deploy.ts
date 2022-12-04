@@ -4,15 +4,15 @@ async function main() {
  
   const initialSalaryAmount = ethers.utils.parseEther("200000")
 
-  const Token = await ethers.getContractFactory("MaticToken");
-  const token = await Token.deploy("MaticB","MTB");
+  const Token = await ethers.getContractFactory("BaconToken");
+  const token = await Token.deploy("Bacon","BT");
 
   const PayRoll = await ethers.getContractFactory("PayRoll");
-  const payroll = await PayRoll.deploy(token.address, initialSalaryAmount);
+  const payroll = await PayRoll.deploy(token.address);
 
   await payroll.deployed();
 
-  console.log(`PayRoll with initial deposite of ${initialSalaryAmount} deployed to ${payroll.address}`);
+  console.log(`PayRoll deployed to ${payroll.address}`);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

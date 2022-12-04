@@ -44,19 +44,19 @@ contract PayRoll is Ownable {
 
    // @param _maticContractAddress is the MATIC Token Contract Address
    // @param initalSalaryFunds is the inital Fund to pay salary deposited into the conntract my the company admin
-    constructor(address _maticContractAddress, uint256 initalSalaryFunds) {
+    constructor(address _maticContractAddress) {
 
         admin = msg.sender;
         MATIC = ERC20(_maticContractAddress);
-        totalSalaryFunds = initalSalaryFunds;
+        
     }
 
     // @notic this function can only called by the admin to set the salary and address of company staffs
-    function setPaymentDeatils(bytes32 _merkleroot, uint256 staffSalary, uint40 _payDayTime) public onlyOwner{
+    function setPaymentDetails(bytes32 _merkleroot, uint256 staffSalary, uint40 _payDayTime) public onlyOwner{
 
         merkleRoot = _merkleroot;
         actualStaffSalary = staffSalary;
-        payDayTime = _payDayTime;
+        payDayTime = uint40(block.timestamp + _payDayTime);
 
     }
 
@@ -106,6 +106,8 @@ contract PayRoll is Ownable {
 
             bool success = ERC20(MATIC).transfer(msg.sender,actualStaffSalary);
              if(!success) revert transferFailed();
+        //     (bool sent, ) = msg.sender.call{value: paymentAmount}("");
+        // require(sent, "Failed to send Bacon");
 
             currentBalance -= actualStaffSalary;
 

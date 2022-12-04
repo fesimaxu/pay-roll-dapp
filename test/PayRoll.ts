@@ -15,18 +15,18 @@ describe("PayRoll", function () {
     const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
     const ONE_GWEI = 1_000_000_000;
 
-    const initialSalaryAmount = ONE_GWEI;
+    const initialSalaryAmount = 0;
     const payDayTime = (await time.latest()) + ONE_YEAR_IN_SECS;
 
     // Contracts are deployed using the first signer/account by default
     const [owner,otherAccount, address1, address2, address3, address4, address5, address6, address7, address8, ] = await ethers.getSigners();
     
     //deploying erc20 contract
-    const Token = await ethers.getContractFactory("MaticToken");
-    const token = await Token.deploy("MATIC", "MT");
+    const Token = await ethers.getContractFactory("BaconToken");
+    const token = await Token.deploy("Bacon", "BT");
 
     const PayRoll = await ethers.getContractFactory("PayRoll");
-    const payroll = await PayRoll.deploy(token.address, initialSalaryAmount);
+    const payroll = await PayRoll.deploy(token.address);
 
      // merkle tree for staff addresses
 
@@ -73,7 +73,7 @@ describe("PayRoll", function () {
         const leaf = keccak256(address1.address);
         const proof = merkleTree.getHexProof(leaf);
 
-        await payroll.connect(owner).setPaymentDeatils(rootHash,staffSalary,payDayTime);
+        await payroll.connect(owner).setPaymentDetails(rootHash,staffSalary,payDayTime);
 
         await token
        .connect(address1)
@@ -99,7 +99,7 @@ describe("PayRoll", function () {
         const leaf = keccak256(address1.address);
         const proof = merkleTree.getHexProof(leaf);
 
-        await payroll.connect(owner).setPaymentDeatils(rootHash,staffSalary,payDayTime);
+        await payroll.connect(owner).setPaymentDetails(rootHash,staffSalary,payDayTime);
 
         await token
        .connect(owner)
@@ -110,6 +110,7 @@ describe("PayRoll", function () {
        const claimToken = await payroll.connect(address1).claimSalary(
         proof
       );
+      
       const staff = await payroll.isStaff(address1.address);
 
       expect(staff.claimed).to.equal(true);
